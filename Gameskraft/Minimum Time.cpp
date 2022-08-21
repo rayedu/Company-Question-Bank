@@ -10,13 +10,13 @@ int find(int n, vector<int> &par) {
 }
 
 // UNION 2 COMPONENTS
-bool unionF(int n1, int n2, vector<int> &par, vector<int> &rank) {
+unionF(int n1, int n2, vector<int> &par, vector<int> &rank) {
     int p1 = find(n1, par);
     int p2 = find(n2, par);
 
     // ELEMENTS HAVE SAME PARENT, SO REDUNDANT NODE FOUND, RETURN
     if(p1 == p2)
-        return false;
+        return;
 
     // SMALLER RANK COMPONENT IS JOINED W/ HIGHER RANK COMPONENT
     if(rank[p1] > rank[p2]) {
@@ -26,8 +26,6 @@ bool unionF(int n1, int n2, vector<int> &par, vector<int> &rank) {
         par[p1] = p2;
         rank[p2] += rank[p1];
     }
-
-    return true;
 }
 
 bool cmp(vector<int> &a, vector<int> &b) {
