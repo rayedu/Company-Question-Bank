@@ -10,7 +10,7 @@ int find(int n, vector<int> &par) {
 }
 
 // UNION 2 COMPONENTS
-unionF(int n1, int n2, vector<int> &par, vector<int> &rank) {
+void unionF(int n1, int n2, vector<int> &par, vector<int> &rank) {
     int p1 = find(n1, par);
     int p2 = find(n2, par);
 
