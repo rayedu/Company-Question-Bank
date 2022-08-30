@@ -1,0 +1,533 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+//------------##Effective teams------------------------------------------------------------
+long fun(vector<int> &skill){
+    sort(skill.begin(),skill.end());
+    long sum=0;
+    for(auto &x:skill){
+        sum+=x;
+    }
+    int n=skill.size()/2;
+    if(sum%n!=0)
+        return -1;
+    long limit=sum/n;
+    int i=0,j=skill.size()-1;
+    long ans=0;
+    // for(auto &x:skill)
+    //     cout<<x;
+    
+    while(i<j){
+        if((skill[i]+skill[j])!=limit)
+            return -1;
+        ans+=(skill[i]*skill[j]);
+        i++;
+        j--;
+    }
+    return ans;
+}
+// int main(){
+//     vector<int>skill={5,4,2,1};
+//     cout<<fun(skill);
+//     return 0;
+// }
+
+//----------------#WEB Pagination----------------------------------------------------------------------------
+
+int parameter=-1;
+int Order=-1;
+
+bool compr(vector<string> &a,vector<string> &b){
+    if(parameter==0){
+        if(Order==0){
+            return a[0]<b[0];
+        }
+        else{
+            return a[0]>b[0];
+        }
+    }
+    else
+    if(parameter==1){
+        if(Order==0){
+            return stoi(a[1])<stoi(b[1]);
+        }
+        else{
+            return stoi(a[1])>stoi(b[1]);
+        }
+    }
+    else{
+        if(Order==0){
+            return stoi(a[2])<stoi(b[2]);
+        }
+        else{
+            return stoi(a[2])>stoi(b[2]);
+        }
+    }
+}
+
+vector<string>fetchItemsToDisplay(vector<vector<string>> &items,int Par,int O,int PerPage,int pageNo){
+    parameter=Par;
+    Order=O;
+    int n=items.size();
+    sort(items.begin(),items.end(),compr); 
+    vector<string>ans;
+    
+    int i = pageNo * PerPage;
+    int j = min(n, i+PerPage);
+    for(int k=i; k<j; k++) {
+        ans.push_back(items[k][0]);
+    }
+    return ans;
+}
+
+// int main(){
+//     vector<vector<string>>items;
+//     items.push_back(vector<string>{"item1","10","15"});
+//     items.push_back(vector<string>{"item2","3","4"});
+//     items.push_back(vector<string>{"item3","17","8"});
+//     items.push_back(vector<string>{"item4","7","18"});
+//     items.push_back(vector<string>{"item5","1","3"});
+//     items.push_back(vector<string>{"item6","12","4"});
+//     int sortPar=2;
+//     int sortOrder=1;
+//     int itemsPerPage=2;
+//     int pageNumber=1;
+//     vector<string>ans=fetchItemsToDisplay(items,sortPar,sortOrder,itemsPerPage,pageNumber);
+//     for(auto &x:ans)
+//         cout<<x<<" ";
+//     return 0;
+// }
+
+
+//-----#MAXIMIZE THE VALUE--------------------------------------------------------------------------------
+vector<int> maximize_value(vector<int>&arr) {
+    sort(arr.begin(), arr.end());
+    int n = arr.size();
+    if(n<=2) {
+        return arr;
+    }
+    vector<int> ans;
+    int k = 0, j = 0;
+    if(n % 2 == 0) {
+        j = (n-1) / 2;
+    } 
+    else {
+        j=n/2;
+    }
+    ans.push_back(arr[j++]);
+    ans.push_back(arr[j++]);
+    for(int i = 2; i<n ; i++) {
+        if(i % 2 == 0) {
+            ans.push_back(arr[k++]);
+        } 
+        else {
+            ans.push_back(arr[j++]);
+        }
+    }
+    return ans;
+}
+
+// int main() {
+//     vector<int>arr={21,9,7,5,34};
+//     vector<int>ans=maximize_value(arr);
+//     for(auto &x:ans){
+//         cout<<x<<" ";
+//     }
+//     return 0;
+// }
+
+//------#SLOT MACHINE 2.0-----------------------------------------------------------------------------------
+
+int slot_machine(vector<string> &arr,int n){
+    for(string &x:arr){
+        sort(x.begin(),x.end(),greater<>());
+    }
+    for(auto &x:arr){
+        cout<<x<<"\n";
+    }
+    int sum=0;
+    int i=0;
+    while(i<arr[0].size()){
+        int maxi=INT_MIN;
+        for(int j=0;j<n;j++){
+            maxi=max(maxi,arr[j][i]-'0');
+        }
+        i++;
+        sum+=maxi;
+    }
+    return sum;
+}
+
+// int main(){
+//     int n=4;
+//     vector<string>arr={"7128583","2467362","3142565","1119312"};
+//     cout<<slot_machine(arr,n);
+//     return 0;
+// }
+
+//-----------#FINDING INTEGER------------------------------------------------------------------------------
+
+vector<int>find_integer(vector<int>&arr,int n,int k){
+    priority_queue<int,vector<int>,greater<int>>pq;
+    vector<int>ans;
+    for(int i=0;i<n;i++){
+        pq.push(arr[i]);
+        if(pq.size()>k){
+            pq.pop();
+        }   
+        if(pq.size()==k){
+            ans.push_back(pq.top());
+        }
+    }
+    return ans;
+}
+ // int main(){
+ //     int k=4;
+ //     vector<int>arr={3,2,4,5,1};
+ //     vector<int>ans=find_integer(arr,arr.size(),k);
+ //     for(auto &x:ans){
+ //         cout<<x<<" ";
+ //     }
+ //     return 0;
+ // }
+
+//---------#### Maximum Order Value ###
+
+bool cmp(pair<pair<int, int>, int> &a, pair<pair<int, int>, int> &b) {
+    if(a.first.first == b.first.first)
+        return a.first.second < b.first.second;
+    return a.first.first < b.first.first;
+}
+
+int solve(map<pair<int, long>, int> &mp, vector<pair<pair<int, int>, int>> &v, int index, int endVal) {
+    // base condition
+    if(index==v.size()) return 0;
+    if(mp.find({index, endVal}) != mp.end()) return mp[{index, endVal}];
+    // decision tree
+    if(endVal < v[index].first.first) {
+        return mp[{index, endVal}] = max(v[index].second + solve(mp, v, index+1, v[index].first.second), solve(mp, v, index+1, endVal));
+    } else {
+        return mp[{index, endVal}] = solve(mp, v, index+1, endVal);
+    }
+}
+
+// int main() {
+//     map<pair<int, long>, int> mp;
+//     vector<int> start = {10, 5, 15, 18, 30};
+//     vector<int> duration = {30, 12, 20, 35, 35};
+//     vector<int> vol = {50, 51, 20, 25, 10};
+//     int n = start.size();
+//     vector<pair<pair<int, int>, int>> v;
+//     for(int i=0; i<n; i++) {
+//         v.push_back({{start[i], start[i]+duration[i]}, vol[i]});
+//     }
+//     sort(v.begin(), v.end(), cmp);
+//     cout<<solve(mp, v, 0, 0);
+// }
+
+
+//-------### Do They Belong ? ###
+
+float area(int x1, int y1, int x2, int y2, int x3, int y3)
+{
+   return abs((x1*(y2-y3) + x2*(y3-y1)+ x3*(y1-y2))/2.0);
+}
+
+bool isInside(int x1, int y1, int x2, int y2, int x3, int y3, int x, int y)
+{  
+   float A = area (x1, y1, x2, y2, x3, y3);
+   float A1 = area (x, y, x2, y2, x3, y3);
+   float A2 = area (x1, y1, x, y, x3, y3);
+   float A3 = area (x1, y1, x2, y2, x, y);
+   return (A == A1 + A2 + A3);
+}
+
+// int main()
+// {
+//     int x1 = 0, y1 = 0;
+//     int x2 = 2, y2 = 0;
+//     int x3 = 4, y3 = 0;
+//     int px = 2, py = 0;
+//     int qx = 4, qy = 0;
+//     vector<int> corners;
+//     corners.push_back(pow(x1-x2, 2) + pow(y1-y2, 2));
+//     corners.push_back(pow(x2-x3, 2) + pow(y2-y3, 2));
+//     corners.push_back(pow(x3-x1, 2) + pow(y3-y1, 2));
+//     sort(corners.begin(), corners.end());
+//     if(corners[0] + corners[1] <= corners[2]) {
+//         cout<<"0";
+//         return 0;
+//     }
+//     bool point1 = isInside(x1, y1, x2, y2, x3, y3, px, py)?1:0;
+//     bool point2 = isInside(x1, y1, x2, y2, x3, y3, qx, qy)?1:0;
+//     if(point1 && !point2) cout<<"1";
+//     else if(!point1 && point2) cout<<"2";
+//     else if(point1 && point2) cout<<"3";
+//     else cout<<"4";
+//     return 0;
+// }
+
+//--------### Cardinality Sorting ###
+
+bool cmp(int &a, int &b) {
+    int a1 = __builtin_popcount(a);
+    int b1 = __builtin_popcount(b);
+    if(a1 == b1)
+        return a<b;
+    return a1<b1;
+}
+
+// int main() {
+//     vector<int> input = {31, 15, 7, 3, 2};
+//     sort(input.begin(), input.end(), cmp);
+//     for(int &a: input)
+//         cout<<a<<" ";
+// }
+
+//--------#CLOSEST NUMBER FROM UNSORTED INTEGER----------------
+//  https://www.geeksforgeeks.org/closest-numbers-list-unsorted-integers/
+
+//----------#LARGEST SUB-GRID-----------------------------------------------------
+vector<vector<int>> preSum;
+int getSum(int row, int col){
+  if(row < 0 || col < 0)
+    return 0;
+  return preSum[row][col];
+}
+
+int sumRegion(int row1, int col1, int row2, int col2) {
+  return getSum(row2,col2) - getSum(row1-1,col2) - getSum(row2,col1-1) + getSum(row1-1,col1-1);
+}
+
+int largestSubgrid(vector<vector<int>>& grid, int k){
+  int n = grid.size();
+  preSum.resize(n,vector<int>(n,0));
+  for(int i=0; i<n; i++){
+    for(int j=0; j<n; j++){
+      preSum[i][j] = getSum(i-1,j) + getSum(i,j-1) - getSum(i-1,j-1) + grid[i][j];
+    }
+  }
+  int low = 0, high = n, ans = 0;
+  while(low <= high){
+    int mid = low + (high - low)/2;
+    if(mid == 0)
+    return 0;
+    bool stop = false;
+    for(int i=mid-1; i<n && !stop; i++){
+      for(int j=mid-1; j<n && !stop; j++){
+        int subSum = sumRegion(i-mid+1,j-mid+1,i,j);
+        if(subSum > k){
+          stop = true;
+        }
+      }
+    }
+    if(stop){
+      high = mid - 1;
+    }
+    else{
+      ans = mid;
+      low = mid + 1;
+    }
+  }
+  return ans;
+}
+// int main() {
+//   vector<vector<int>> mat = {{1,1,1},
+//                              {1,1,1},
+//                              {1,1,1}};
+//     int max_sum=4;
+//   cout<<largestSubgrid(mat,max_sum);
+// }
+
+//------------#Sort Integers by The Number of 1 Bits
+
+vector<int> sortByBits(vector<int>& arr) {
+    sort(begin(arr), end(arr), [](const int a, int b) {
+      const int x = bitset<32>(a).count();
+      const int y = bitset<32>(b).count();
+      return x == y ? a < b : x < y;
+    });
+    return arr;
+  }
+
+//-------------#Compute Before matrix-------------------------
+// https://www.geeksforgeeks.org/compute-before-matrix/
+
+//-------------#sprint-----------------------------------
+// 
+
+//-------------#Binge Watching-------------------------------
+int findMinimumDays(float array[], int sz) {
+    int count;
+    float sum=0;
+    for (int i=0;i<sz; i++) {
+        sum=sum+array[i];
+    }
+    count=sum/3;
+    return count;
+}
+
+// int main(){
+//     int minDay;
+//     int n=5;
+//     float duration[]={1.90,1.04,1.25,2.5,1,75};
+//     cout<<findMinimumDays(duration,n)+1;
+//     return 0;
+// }
+
+//--------------#task schudling----------------------------------
+
+const int BufferSize = 120000;
+
+struct Node
+{
+	int from;
+	int to;
+	long long maximum;
+	long long offset;
+	Node *left;
+	Node *right;
+};
+
+int len = 0;
+Node nodes[BufferSize*2];
+
+Node *MakeTree(int from, int to)
+{
+	Node *p = &nodes[len++];
+	p->from = from;
+	p->to = to;
+	p->maximum = -(1LL << 60);
+	p->offset = 0;
+
+	if (from+1 < to)
+	{
+		int mid = (from + to)/2;
+		p->left = MakeTree(from, mid);
+		p->right = MakeTree(mid, to);
+	}
+
+	return p;
+}
+
+void Insert(Node *p, int from, int to, long long x)
+{
+	if (from <= p->from && p->to <= to)
+	{
+		//x += p->offset;
+		if (x > p->maximum)
+			p->maximum = x;
+	}
+	else
+	{
+		int mid = (p->from + p->to)/2;
+		if (from < mid && to > p->from)
+		{
+			Insert(p->left, from, to, x);
+			long long tmp = p->left->maximum + p->left->offset;
+			if (tmp > p->maximum)
+				p->maximum = tmp;
+		}
+		if (from < p->to && to > mid)
+		{
+			Insert(p->right, from, to, x);
+			long long tmp = p->right->maximum + p->right->offset;
+			if (tmp > p->maximum)
+				p->maximum = tmp;
+		}
+	}
+}
+
+void Add(Node *p, int from, int to, long long x)
+{
+	if (from <= p->from && p->to <= to)
+	{
+		p->offset += x;
+	}
+	else
+	{
+		int mid = (p->from + p->to)/2;
+		if (from < mid && to > p->from)
+		{
+			Add(p->left, from, to, x);
+			long long tmp = p->left->maximum + p->left->offset;
+			if (tmp > p->maximum)
+				p->maximum = tmp;
+		}
+		if (from < p->to && to > mid)
+		{
+			Add(p->right, from, to, x);
+			long long tmp = p->right->maximum + p->right->offset;
+			if (tmp > p->maximum)
+				p->maximum = tmp;
+		}
+	}
+}
+
+// int main()
+// {
+// 	int t=4;
+//     int m[]={1,1,3,4};
+//     int d[]={3,1,2,3};
+
+// 	int max_d = *max_element(d, d + t) + 1;
+// 	MakeTree(0, max_d);
+
+// 	for (int i = 0; i < t; ++i)
+// 	{
+// 		Add(nodes, d[i], max_d, m[i]);
+// 		Insert(nodes, d[i], d[i]+1, -d[i]);
+// 		cout << max(0LL, nodes->maximum) << endl;
+// 	}
+
+// 	return 0;
+// }
+
+//-----------------#vaccination drive----------------------------------------------
+
+int findmintime(int cn, vector<int>cf, vector<int>ct, vector<int>st){
+    int min_dist=0;
+    for(int i=0;i<cn;i++){
+        if(st[i]==1){
+            int s_node=i+1;
+            int dist=0;
+            queue<pair<int, int>>q;
+            q.push({s_node, dist});
+            vector<int>vis(cn, 0);
+            while(!q.empty()){
+                int cur_node=q.front().first;
+                int cur_dist=q.front().second;
+                vis[cur_node-1]=1;
+                q.pop();
+                if(st[cur_node-1]==3){
+                    dist=cur_dist;
+                    break;
+                }
+                for(int j=0;j<cf.size();j++){
+                    if(cf[j]==cur_node && !vis[ct[j]-1]){
+                        q.push({ct[j], cur_dist+1});
+                    }
+                    else if(ct[j]==cur_node && !vis[cf[j]-1]){
+                        q.push({cf[j], cur_dist+1});
+                    }
+                }
+            }
+            min_dist=max(dist, min_dist);
+        }
+
+    }
+    return min_dist;
+}
+
+
+//  int main(){
+//     int n=7;
+//     vector<int>cf={1,1,2,2,3,3};
+//     vector<int>ct={2,3,4,5,6,7};
+//     vector<int>st={2,2,2,3,2,2,1};
+//     cout<<findmintime(n, cf, ct, st);
+//     return 0;
+// }       
+
+
+
